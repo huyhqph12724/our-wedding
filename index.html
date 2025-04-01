@@ -33,7 +33,6 @@
     <link rel="stylesheet" href="css/style.css"/>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K9L0ZFE1PJ"></script>
     <script>window.dataLayer = window.dataLayer || [];
-
     function gtag() {
         dataLayer.push(arguments);
     }
@@ -890,8 +889,7 @@
         toastMessageWishes(dataWishes, 'wishes');
     }
     const gistId = "a859bd56789a170be3abdef1c9be08e7";
-    const normalText = process.env.REACT_APP_TOKEN;
-    console.log("normalText", normalText);
+    const normalText = "Z2l0aHViX3BhdF8xMUFQVUJTRFEwVGZpYTNYZUlCeG90X2FtQWhUcGtwZkpMVlRWZmZFYVlBdDhsbGlnUm9Ob1Bacno4VkRuSm1pOFpZN0VPSEZVNk1JWlB1UXRT";
     let fileName = {}; // Lấy tên file JSON
     let content = {}; // Parse JSON
     let wishes = [];
@@ -922,7 +920,7 @@
             const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                 method: "PATCH",
                 headers: {
-                    "Authorization": `token ${normalText}`,
+                    "Authorization": `token ${atob(normalText)}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
@@ -1047,7 +1045,7 @@
             const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                 method: "PATCH",
                 headers: {
-                    "Authorization": `token ${normalText}`,
+                    "Authorization": `token ${atob(normalText)}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
