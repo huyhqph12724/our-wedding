@@ -885,7 +885,6 @@
 <script src="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.js?v=20250312"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1-crypto-js.js"></script>
 <script type="module">
-    import { GITHUB_TOKEN } from './env.js';
     if (typeof toastMessageWishes === 'function') {
         toastMessageWishes(dataWishes, 'wishes');
     }
@@ -897,10 +896,9 @@
     async function initData() {
         try {
             // 📌 1. Lấy dữ liệu JSON hiện tại từ Gist
-            let response = await fetch(`https://api.github.com/gists/${gistId}`);
-            let gist = await response.json();
-            fileName = Object.keys(gist.files)[0]; // Lấy tên file JSON
-            content = JSON.parse(gist.files[fileName].content); // Parse JSON
+            let response = await fetch(`https://67ec0717aa794fb3222c93ec.mockapi.io/api/wish`);
+            content = await response.json();
+            //fileName = Object.keys(gist.files)[0]; // Lấy tên file JSON
 
             console.log("Data: ", content);
 
@@ -911,92 +909,53 @@
         }
     }
 
-    async function addUser(user) {
-        try {
-            // 📌 2. Thêm user mới vào danh sách users
-            content.users.push(user); // ⚠ Sửa 'newUser' thành 'user'
-
-            // 📌 3. Cập nhật lại Gist với danh sách users mới
-            const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                method: "PATCH",
-                headers: {
-                    "Authorization": `token ${GITHUB_TOKEN}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    description: "Thêm user vào danh sách users trong Gist",
-                    files: {
-                        [fileName]: {
-                            content: JSON.stringify(content, null, 2) // Format JSON đẹp
-                        }
-                    }
-                })
-            });
-
-            if (updateResponse.ok) {
-                console.log("✅ User đã được thêm vào Gist!");
-                displayWishes(); // ✅ Cập nhật danh sách sau khi thêm user
-            } else {
-                console.error("❌ Lỗi khi cập nhật:", await updateResponse.text());
-            }
-        } catch (error) {
-            console.error("❌ Lỗi khi thêm user:", error);
-        }
-    }
-
     // 📌 Hiển thị lời chúc sau khi dữ liệu được tải về
     const wishElement = document.getElementById('wishes-list');
     let currentIndex = 0;
     const messagesPerPage = 3;
 
     function displayWishes() {
-        wishes = content.wishes;
-
-        // Parse and sort wishes
-        wishes.forEach(wish => {
+        // Sắp xếp lời chúc theo thứ tự mới nhất
+        content.forEach(wish => {
             wish.createdDate = new Date(wish.createdDate);
         });
-        wishes.sort((a, b) => b.createdDate - a.createdDate);
+        content.sort((a, b) => b.createdDate - a.createdDate);
 
-        // For initial display, show 5 messages
-        if (wishElement.children.length === 0) {
-            const initialCount = Math.min(5, wishes.length);
-            for (let i = 0; i < initialCount; i++) {
-                addWishCard(wishes[i]);
-            }
-            currentIndex = initialCount;
-            return;
-        }
+        // Xóa lời chúc hiện tại
+        wishElement.innerHTML = '';
 
-        // For subsequent displays, add one message at a time
-        if (currentIndex < wishes.length) {
-            // Remove first card with animation
-            const firstCard = wishElement.firstElementChild;
-            if (firstCard) {
-                firstCard.style.opacity = '0';
-                firstCard.style.transform = 'translateY(-20px)';
-                setTimeout(() => {
-                    firstCard.remove();
-                }, 300);
-            }
+        // Hiển thị tất cả lời chúc
+        content.forEach(wish => {
+            addWishCard(wish);
+        });
 
-            // Add new card with animation
+        // Tự động cuộn đến lời chúc mới sau khi thêm
+        wishElement.scrollTop = 0;
+
+        // Sự kiện click để dừng auto-scroll khi người dùng tương tác
+        let isUserScrolling = false;
+        wishElement.addEventListener('wheel', () => {
+            isUserScrolling = true;
             setTimeout(() => {
-                addWishCard(wishes[currentIndex]);
-                currentIndex++;
+                isUserScrolling = false;
+            }, 5000); // Reset sau 5 giây không tương tác
+        });
 
-                // Reset to beginning if reached the end
-                if (currentIndex >= wishes.length) {
-                    currentIndex = 0;
+        // Auto-scroll chỉ khi không có tương tác người dùng
+        setInterval(() => {
+            if (!isUserScrolling && content.length > 5) {
+                const firstCard = wishElement.firstElementChild;
+                const cardHeight = firstCard.offsetHeight + 15; // height + margin
+
+                if (wishElement.scrollTop + wishElement.clientHeight >= wishElement.scrollHeight) {
+                    // Đã cuộn đến cuối, quay lại đầu
+                    wishElement.scrollTop = 0;
+                } else {
+                    // Cuộn xuống một card
+                    wishElement.scrollTop += cardHeight;
                 }
-
-                // Smooth scroll to bottom
-                wishElement.lastElementChild.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'end'
-                });
-            }, 300);
-        }
+            }
+        }, 5000);
     }
 
     function addWishCard(wish) {
@@ -1019,10 +978,6 @@
         wishElement.appendChild(wishCard);
     }
 
-    // Change interval to 5 seconds for better readability
-    setInterval(displayWishes, 5000);
-
-    //Thêm lời chúc
     async function addWish(wish) {
         try {
             // Show loading indicator
@@ -1030,61 +985,24 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Đang gửi...';
 
-            // Get latest content first
-            let response = await fetch(`https://api.github.com/gists/${gistId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch current data');
-            }
-
-            let gist = await response.json();
-            fileName = Object.keys(gist.files)[0];
-            content = JSON.parse(gist.files[fileName].content);
-            content.wishes.push(wish);
-
             // Update Gist
-            const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
-                method: "PATCH",
+            const createResponse = await fetch(`https://67ec0717aa794fb3222c93ec.mockapi.io/api/wish`, {
+                method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${GITHUB_TOKEN}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    files: {
-                        [fileName]: {
-                            content: JSON.stringify(content, null, 2)
-                        }
-                    }
-                })
+                body: JSON.stringify(wish)
             });
 
-            if (!updateResponse.ok) {
+            if (createResponse.status !== 201) {
                 throw new Error('Failed to update wishes');
             }
 
             // Success handling
             document.getElementById('wishForm').reset();
 
-            // Clear existing wishes
-            wishElement.innerHTML = '';
-
-            // Reset index and refresh display
-            currentIndex = 0;
-            wishes = content.wishes;
-
-            // Parse dates for new wishes
-            wishes.forEach(w => {
-                w.createdDate = new Date(w.createdDate);
-            });
-
-            // Sort by newest first
-            wishes.sort((a, b) => b.createdDate - a.createdDate);
-
-            // Display initial 5 wishes
-            const initialCount = Math.min(5, wishes.length);
-            for (let i = 0; i < initialCount; i++) {
-                addWishCard(wishes[i]);
-            }
-            currentIndex = initialCount;
+            // Refresh display
+            await initData();
 
             // Show success message
             alert('Cảm ơn bạn đã gửi lời chúc!');

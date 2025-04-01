@@ -1,44 +1,12 @@
-/*.wishes-list {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    max-height: 400px; !* Adjust the height as needed *!*/
-/*    overflow-y: auto;*/
-/*}*/
-
-.wish-card {
-    display: flex;
-    margin: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    animation: fadeInUp 0.5s ease;
-}
-
 .wish-content {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 15px;
     align-items: center;
-    width: 100%;
-}
-
-.wish-user {
-    font-weight: bold;
-    color: #333;
-    white-space: nowrap;
-}
-
-.wish-message {
-    color: #666;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.wish-date {
-    font-size: 0.85em;
-    color: #999;
-    white-space: nowrap;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 @keyframes fadeInUp {
@@ -52,37 +20,143 @@
     }
 }
 
-.wish-form {
-    margin-bottom: 20px;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.wish-form input,
+.wish-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
 }
 
-.wish-form-container {
-    display: grid;
-    gap: 10px;
+.wish-form input:focus,
+.wish-form textarea:focus {
+    border-color: #ff8fb1;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255,143,177,0.2);
 }
 
-.wish-form input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
+.wish-form textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
 .wish-submit-btn {
-    padding: 10px 20px;
-    background-color: #4CAF50;
+    background: linear-gradient(45deg, #ff8fb1, #ff6b95);
     color: white;
     border: none;
-    border-radius: 5px;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .wish-submit-btn:hover {
-    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255,143,177,0.4);
+}
+
+.wish-submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-weight: 500;
+}
+
+.form-group small {
+    display: block;
+    color: #888;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+.donate-box {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    gap: 30px;
+}
+
+.wish-form {
+    flex: 0 0 400px; /* Cố định chiều rộng form */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    height: fit-content; /* Chiều cao vừa với nội dung */
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 768px) {
+    .donate-box {
+        flex-direction: column;
+    }
+
+    .wish-form {
+        flex: none;
+        width: 100%;
+    }
+}
+
+.wishes-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    overflow-y: auto; /* Cho phép cuộn dọc */
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    /* Tùy chỉnh thanh cuộn */
+    scrollbar-width: thin;
+    scrollbar-color: #ff8fb1 rgba(255, 255, 255, 0.1);
+}
+
+/* Style cho thanh cuộn trên Chrome/Safari */
+.wishes-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.wishes-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.wishes-list::-webkit-scrollbar-thumb {
+    background: #ff8fb1;
+    border-radius: 3px;
+}
+
+/* Hiệu ứng mới cho wish card */
+.wish-card {
+    flex-shrink: 0;
+    margin-bottom: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
+    cursor: pointer; /* Thêm con trỏ pointer để thể hiện có thể tương tác */
+    transition: transform 0.3s ease;
+}
+
+.wish-card:hover {
+    transform: translateY(-2px); /* Hiệu ứng nhấc lên khi hover */
 }
