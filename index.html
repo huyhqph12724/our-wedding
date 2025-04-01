@@ -885,7 +885,7 @@
 <script src="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.js?v=20250312"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1-crypto-js.js"></script>
 <script type="module">
-    import './env.js';
+    import { GITHUB_TOKEN } from './env.js';
     if (typeof toastMessageWishes === 'function') {
         toastMessageWishes(dataWishes, 'wishes');
     }
