@@ -1045,7 +1045,7 @@
             const updateResponse = await fetch(`https://api.github.com/gists/${gistId}`, {
                 method: "PATCH",
                 headers: {
-                    "Authorization": `token ${atob(normalText)}`,
+                    "Authorization": `Bearer ${atob(normalText)}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
