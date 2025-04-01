@@ -28,9 +28,16 @@
     <link href="https://hqsaveourdate.iwedding.info/common/calendar.css?v=20250312" rel="stylesheet">
     <link href="https://hqsaveourdate.iwedding.info/templates/template15/css/style.css?v=20250312" rel="stylesheet">
     <link href="https://hqsaveourdate.iwedding.info/common/fonts/fonts.css?v=20250312" rel="stylesheet">
-    <link href="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.css?v=20250312" rel="stylesheet">
+<!--    <link href="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.css?v=20250312" rel="stylesheet">-->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <link rel="stylesheet" href="css/style.css"/>
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- jQuery (Toastr yêu cầu jQuery) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K9L0ZFE1PJ"></script>
     <script>window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -882,12 +889,10 @@
 <script src="https://hqsaveourdate.iwedding.info/common/biicommon.min.js?v=20250312"></script>
 <script src="https://hqsaveourdate.iwedding.info/common/emoji-picker/js/insertTextAtCursor.js?v=20250312"></script>
 <script type="module" src="https://hqsaveourdate.iwedding.info/common/emoji-picker/js/init.js?v=20250312"></script>
-<script src="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.js?v=20250312"></script>
+<!--<script src="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.js?v=20250312"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1-crypto-js.js"></script>
 <script type="module">
-    if (typeof toastMessageWishes === 'function') {
-        toastMessageWishes(dataWishes, 'wishes');
-    }
+
     const gistId = "a859bd56789a170be3abdef1c9be08e7";
     let fileName = {}; // Lấy tên file JSON
     let content = {}; // Parse JSON
@@ -1005,7 +1010,18 @@
             await initData();
 
             // Show success message
-            alert('Cảm ơn bạn đã gửi lời chúc!');
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: "toast-top-right", // Thay đổi vị trí từ top-center thành bottom-right
+                timeOut: 3000,
+                extendedTimeOut: 2000,
+                showEasing: "swing",
+                hideEasing: "linear",
+                showMethod: "fadeIn",
+                hideMethod: "fadeOut"
+            };
+            toastr.success('Cảm ơn bạn đã gửi lời chúc tới cô dâu chú rể! ❤️');
 
         } catch (error) {
             console.error("Error:", error);
