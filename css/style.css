@@ -1,3 +1,14 @@
+.wishes-container {
+    flex: 1;
+}
+
+.wishes-title {
+    text-align: center;
+    color: #ff8fb1;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 600;
+}
 .wish-content {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -214,3 +225,5 @@
     color: #fff;
     opacity: 1;
 }
+
+/* Update these styles in your css/style.css file */
