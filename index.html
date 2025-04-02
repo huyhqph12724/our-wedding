@@ -28,7 +28,7 @@
     <link href="https://hqsaveourdate.iwedding.info/common/calendar.css?v=20250312" rel="stylesheet">
     <link href="https://hqsaveourdate.iwedding.info/templates/template15/css/style.css?v=20250312" rel="stylesheet">
     <link href="https://hqsaveourdate.iwedding.info/common/fonts/fonts.css?v=20250312" rel="stylesheet">
-<!--    <link href="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.css?v=20250312" rel="stylesheet">-->
+    <!--    <link href="https://hqsaveourdate.iwedding.info/common/toastr/toastr.min.css?v=20250312" rel="stylesheet">-->
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <link rel="stylesheet" href="css/style.css"/>
     <!-- Toastr CSS -->
@@ -40,6 +40,7 @@
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K9L0ZFE1PJ"></script>
     <script>window.dataLayer = window.dataLayer || [];
+
     function gtag() {
         dataLayer.push(arguments);
     }
@@ -893,6 +894,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1-crypto-js.js"></script>
 <script type="module">
 
+    // Show success message
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right", // Thay đổi vị trí từ top-center thành bottom-right
+        timeOut: 5000,
+        extendedTimeOut: 2000,
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut"
+    };
+
     const gistId = "a859bd56789a170be3abdef1c9be08e7";
     let fileName = {}; // Lấy tên file JSON
     let content = {}; // Parse JSON
@@ -1000,7 +1014,30 @@
             });
 
             if (createResponse.status !== 201) {
-                throw new Error('Failed to update wishes');
+                const lastWish = content.length > 0 ? content[content.length - 1] : null;
+                if (lastWish != null) {
+                    const deleteResponse = await fetch(`https://67ec0717aa794fb3222c93ec.mockapi.io/api/wish/${lastWish.id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (deleteResponse.status === 200) {
+                        const createResponse = await fetch(`https://67ec0717aa794fb3222c93ec.mockapi.io/api/wish`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(wish)
+                        });
+                        if (createResponse.status !== 201) {
+                            throw new Error("Có lỗi xảy ra!");
+                        }
+                    } else {
+                        throw new Error("Có lỗi xảy ra!");
+                    }
+                }
             }
 
             // Success handling
@@ -1008,24 +1045,11 @@
 
             // Refresh display
             await initData();
-
-            // Show success message
-            toastr.options = {
-                closeButton: true,
-                progressBar: true,
-                positionClass: "toast-top-right", // Thay đổi vị trí từ top-center thành bottom-right
-                timeOut: 3000,
-                extendedTimeOut: 2000,
-                showEasing: "swing",
-                hideEasing: "linear",
-                showMethod: "fadeIn",
-                hideMethod: "fadeOut"
-            };
-            toastr.success('Cảm ơn bạn đã gửi lời chúc tới cô dâu chú rể! ❤️');
+            toastr.success('Cảm ơn bạn đã gửi lời chúc tới cô dâu chú rể ❤️');
 
         } catch (error) {
             console.error("Error:", error);
-            alert('Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
+            toastr.error('Cô dâu chú rể chưa nhận được lời chúc rồi. Bạn vui lòng gửi lại nhé ❤️');
 
         } finally {
             // Reset button state
