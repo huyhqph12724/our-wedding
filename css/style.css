@@ -11,7 +11,8 @@
 }
 .wish-content {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    /* Change the grid template columns to have a fixed width for the username */
+    grid-template-columns: 150px 1fr 80px;
     gap: 15px;
     align-items: center;
     padding: 15px;
@@ -19,8 +20,15 @@
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
 .wish-user {
     font-weight: bold;
+    overflow-wrap: break-word; /* Allow long words to break and wrap */
+    word-wrap: break-word; /* Legacy support */
+    word-break: break-word; /* Allow breaking of non-CJK words */
+    hyphens: auto; /* Enable hyphenation */
+    max-width: 150px; /* Match the grid column width */
+    min-width: 0; /* Allow content to shrink below max-width */
 }
 
 @keyframes fadeInUp {
