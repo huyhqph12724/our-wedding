@@ -226,4 +226,9 @@
     opacity: 1;
 }
 
-/* Update these styles in your css/style.css file */
+.wish-message {
+    white-space: pre-wrap; /* Preserve whitespace and wrap text */
+    word-break: break-word; /* Break long words to fit within the container */
+    overflow-wrap: break-word; /* Ensure long words break and wrap */
+}
+

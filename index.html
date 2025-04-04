@@ -1230,14 +1230,9 @@
         <div class="wish-content">
             <span class="wish-user">${wish.user}</span>
             <span class="wish-message">${wish.message}</span>
-            <span class="wish-date">${wish.createdDate.toLocaleString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        })}</span>
+            <span class="wish-date">${wish.createdDate.toLocaleDateString('vi-VN')}<br>
+                                    ${wish.createdDate.toLocaleTimeString('vi-VN')}
+            </span>
         </div>
     `;
         wishElement.appendChild(wishCard);
