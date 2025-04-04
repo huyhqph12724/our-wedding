@@ -9,7 +9,7 @@
           content="Hoàng Huy &amp; Nguyễn Quyết - Our wedding date: 2025-04-13 | Chúng tôi yêu mèo và cá. Và hơn hết chúng tôi yêu nhau.">
     <meta name="format-detection" content="telephone=no">
     <meta name="application-name" content="iWedding">
-<!--    <meta name="author" content="Biihappy.com">-->
+    <!--    <meta name="author" content="Biihappy.com">-->
     <meta property="og:site_name" content="Hoàng Huy &amp; Nguyễn Quyết">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Hoàng Huy &amp; Nguyễn Quyết Wedding">
@@ -48,7 +48,8 @@
     gtag('config', 'G-K9L0ZFE1PJ');</script>
 </head>
 <script type="text/javascript">
-    window.alert = function() {};
+    window.alert = function () {
+    };
     var photoGalleries = [];
 </script>
 <body>
@@ -271,7 +272,8 @@
                             <div class="details">
                                 <div class="inner">
                                     <h2>Nguyễn Quyết</h2>
-                                    <p>Hạnh phúc… không phải là được nhiều người yêu. Mà là được được một người yêu rất nhiều</p>
+                                    <p>Hạnh phúc… không phải là được nhiều người yêu. Mà là được được một người yêu rất
+                                        nhiều</p>
                                     <ul class="social-links">
 
 
@@ -1121,19 +1123,51 @@
         hideMethod: "fadeOut"
     };
 
-    const gistId = "a859bd56789a170be3abdef1c9be08e7";
-    let fileName = {}; // Lấy tên file JSON
+    const bot = '7653221177:AAE9hWmG8LdzPR9RPAOY0QYjpxHJ8PGgKhY';
+    const chatId = '-4697505451';
     let content = {}; // Parse JSON
-    let wishes = [];
+
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleString('vi-VN', {
+            hour12: false
+        });
+    }
+
+    function sendWishToTelegram(wish) {
+        try {
+            const formattedDate = formatDate(wish.createdDate);
+            const message = `<b>🎉Lời chúc từ:</b> <i>${wish.user}</i>\n📝<b>Nội dung:</b><i>${wish.message}</i>\n⏰<i>${formattedDate}</i>`.trim();
+
+            fetch(`https://api.telegram.org/bot${bot}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: "HTML"
+                })
+            })
+                .then(response => response.json())
+                .then(() => {
+                    console.log('Gửi thành công:');
+                })
+                .catch(error => {
+                    console.error('Lỗi khi gửi tin nhắn:', error);
+                });
+        } catch (error) {
+            console.error('Lỗi khi gửi tin nhắn:', error);
+        }
+
+    }
+
 
     async function initData() {
         try {
             // 📌 1. Lấy dữ liệu JSON hiện tại từ Gist
             let response = await fetch(`https://67ec0717aa794fb3222c93ec.mockapi.io/api/wish`);
             content = await response.json();
-            //fileName = Object.keys(gist.files)[0]; // Lấy tên file JSON
-
-            console.log("Data: ", content);
 
             // ✅ Gọi displayWishes() sau khi dữ liệu đã sẵn sàng
             displayWishes();
@@ -1144,8 +1178,6 @@
 
     // 📌 Hiển thị lời chúc sau khi dữ liệu được tải về
     const wishElement = document.getElementById('wishes-list');
-    let currentIndex = 0;
-    const messagesPerPage = 3;
 
     function displayWishes() {
         // Sắp xếp lời chúc theo thứ tự mới nhất
@@ -1253,7 +1285,7 @@
                     }
                 }
             }
-
+            sendWishToTelegram(wish);
             // Success handling
             document.getElementById('wishForm').reset();
 
@@ -1285,6 +1317,10 @@
 
         await addWish(wish);
     });
+
+    function sendTelegram(user, message) {
+
+    }
 
     // Initialize data and display wishes
     initData();
